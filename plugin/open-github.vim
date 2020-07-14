@@ -43,10 +43,7 @@ function! OpenGithubFile(start_line, end_line)
   let filepath = s:get_target_filepath()
   let commit_hash = s:get_commit_hash()
 
-  let open_url = repo_url . "blob/" . commit_hash . "/" . filepath
-  if a:start_line != a:end_line
-    let open_url = open_url . "#L" . a:start_line . "-L" . a:end_line
-  endif
+  let open_url = repo_url . "blob/" . commit_hash . "/" . filepath . "#L" . a:start_line . "-L" . a:end_line
 
   return s:open_github_url(open_url)
 endfunction
