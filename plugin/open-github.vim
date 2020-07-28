@@ -17,7 +17,9 @@ function! s:get_repo_url()
 endfunction
 
 function! s:get_target_filepath()
-  return bufname("%")
+  let root_dir = system("git rev-parse --show-toplevel | tr -d '\\n'")
+  let absolute_path = bufname("%")
+  return substitute(absolute_path, '\v' . root_dir . "/?", "", "g")
 endfunction
 
 function! s:get_commit_hash()
