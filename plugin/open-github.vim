@@ -18,8 +18,16 @@ endfunction
 
 function! s:get_target_filepath()
   let root_dir = system("git rev-parse --show-toplevel | tr -d '\\n'")
-  let absolute_path = bufname("%")
-  return substitute(absolute_path, '\v' . root_dir . "/?", "", "g")
+  let relative_path = expand("%:p")
+  if relative_path =~ '\v' . root_dir
+    return substitute(relative_path, '\v' . root_dir . "/?", "", "g")
+  else
+    redraw
+    echohl WarningMsg
+    echo "It doesn't support open url. plese open following URL yourself."
+    echohl None
+    echo relative_path
+  endif
 endfunction
 
 function! s:get_commit_hash()
@@ -43,6 +51,9 @@ endfunction
 function! OpenGithubFile(start_line, end_line)
   let repo_url = s:get_repo_url()
   let filepath = s:get_target_filepath()
+  if filepath == ""
+    return
+  endif
   let commit_hash = s:get_commit_hash()
 
   let open_url = repo_url . "blob/" . commit_hash . "/" . filepath . "#L" . a:start_line . "-L" . a:end_line
